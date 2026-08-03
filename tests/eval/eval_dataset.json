@@ -1,0 +1,72 @@
+[
+  {
+    "id": "q01",
+    "question": "What does the greet function do?",
+    "expected_chunks": ["sample.py"],
+    "expected_keywords": ["greeting", "name", "hello"],
+    "notes": "Module-level function with full docstring in sample.py"
+  },
+  {
+    "id": "q02",
+    "question": "How does the retry decorator work?",
+    "expected_chunks": ["sample.py"],
+    "expected_keywords": ["retry", "attempt", "MAX_RETRIES", "wrapper", "exception"],
+    "notes": "retry() decorator with nested wrapper and MAX_RETRIES constant"
+  },
+  {
+    "id": "q03",
+    "question": "What methods does the Calculator class have?",
+    "expected_chunks": ["sample.py"],
+    "expected_keywords": ["add", "reset", "total", "Calculator"],
+    "notes": "Calculator class with add(), reset(), _compute_internal() methods"
+  },
+  {
+    "id": "q04",
+    "question": "What does the add function return?",
+    "expected_chunks": ["sample.py"],
+    "expected_keywords": ["add", "int", "return"],
+    "notes": "Top-level add(a, b) returns a + b — no docstring"
+  },
+  {
+    "id": "q05",
+    "question": "How does fetch_data retrieve content from a URL?",
+    "expected_chunks": ["sample.py"],
+    "expected_keywords": ["fetch", "url", "urllib", "response"],
+    "notes": "fetch_data() uses urllib.request.urlopen and is decorated with @retry"
+  },
+  {
+    "id": "q06",
+    "question": "What does the main function call?",
+    "expected_chunks": ["sample.py"],
+    "expected_keywords": ["greet", "add", "Calculator", "main"],
+    "notes": "main() calls greet, add, and Calculator — call-graph seed"
+  },
+  {
+    "id": "q07",
+    "question": "How does the Calculator keep a running total?",
+    "expected_chunks": ["sample.py"],
+    "expected_keywords": ["total", "initial", "add", "reset"],
+    "notes": "Calculator stores self.total; add() increments; reset() zeroes it"
+  },
+  {
+    "id": "q08",
+    "question": "What does the multiply function do in JavaScript?",
+    "expected_chunks": ["sample.js"],
+    "expected_keywords": ["multiply", "number", "return"],
+    "notes": "multiply(a, b) in sample.js — named function with JSDoc"
+  },
+  {
+    "id": "q09",
+    "question": "How does the EventEmitter register listeners?",
+    "expected_chunks": ["sample.js"],
+    "expected_keywords": ["on", "listener", "event", "EventEmitter", "map"],
+    "notes": "EventEmitter.on() registers listeners in a Map"
+  },
+  {
+    "id": "q10",
+    "question": "What happens when you divide by zero using the divide function?",
+    "expected_chunks": ["sample.js"],
+    "expected_keywords": ["divide", "zero", "error", "throw"],
+    "notes": "divide() throws Error('Division by zero') when b === 0"
+  }
+]

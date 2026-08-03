@@ -1,0 +1,129 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "coderag"
+version = "0.1.0"
+description = "A codebase RAG assistant that indexes GitHub repositories and answers natural-language questions with file + line citations"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "CodeRAG Contributors" }]
+keywords = [
+    "rag",
+    "retrieval-augmented-generation",
+    "code-search",
+    "llm",
+    "developer-tools",
+    "ast",
+    "embeddings",
+    "vector-store",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Documentation",
+]
+
+[project.urls]
+Homepage = "https://github.com/your-org/coderag"
+Documentation = "https://github.com/your-org/coderag#readme"
+Repository = "https://github.com/your-org/coderag.git"
+Issues = "https://github.com/your-org/coderag/issues"
+Changelog = "https://github.com/your-org/coderag/releases"
+
+dependencies = [
+    # CLI
+    "typer[all]>=0.12",
+    "rich>=13",
+
+    # Config & environment
+    "python-dotenv>=1.0",
+    "pydantic>=2.7",
+    "pydantic-settings>=2.3",
+
+    # Parsing
+    "tree-sitter>=0.23",
+    "tree-sitter-python>=0.23",
+    "tree-sitter-javascript>=0.23",
+    "tree-sitter-typescript>=0.23",
+
+    # Embeddings (local, zero-API-key default)
+    "sentence-transformers>=3.0",
+
+    # Vector store
+    "chromadb>=0.5",
+
+    # Call graph
+    "networkx>=3.3",
+
+    # Git operations
+    "gitpython>=3.1",
+
+    # LLM clients (all optional at runtime, controlled by env vars)
+    "openai>=1.30",
+    "anthropic>=0.28",
+
+    # Tokenization / token budget
+    "tiktoken>=0.7",
+
+    # Utilities
+    "httpx>=0.27",
+    "pathspec>=0.12",
+]
+
+[project.optional-dependencies]
+web = [
+    "fastapi>=0.111",
+    "uvicorn[standard]>=0.30",
+    "python-multipart>=0.0.9",
+]
+dev = [
+    "pytest>=8",
+    "pytest-cov>=5",
+    "pytest-asyncio>=0.23",
+    "httpx>=0.27",          # FastAPI TestClient
+    "fastapi>=0.111",       # web tests
+    "uvicorn[standard]>=0.30",
+    "python-multipart>=0.0.9",
+    "ruff>=0.4",
+    "mypy>=1.10",
+    "types-networkx",
+]
+
+[project.scripts]
+coderag = "coderag.cli:app"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.setuptools.package-data]
+"coderag.web" = ["static/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v --tb=short"
+asyncio_mode = "auto"
+
+[tool.ruff]
+line-length = 100
+src = ["src"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = false
+ignore_missing_imports = true

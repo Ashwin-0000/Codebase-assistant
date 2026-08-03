@@ -1,0 +1,96 @@
+version: "3.9"
+
+# ──────────────────────────────────────────────────────────────────────────────
+# docker-compose.yml — CodeRAG development and production compose file.
+#
+# Usage:
+#   # Build the image
+#   docker compose build
+#
+#   # Index a local repo (CLI)
+#   docker compose run --rm coderag index /workspace
+#
+#   # Ask a question (CLI)
+#   docker compose run --rm coderag ask "how does authentication work?"
+#
+#   # Launch the Web UI  →  http://localhost:8000
+#   docker compose up coderag-web
+#
+#   # Run the evaluation harness
+#   docker compose run --rm coderag-eval
+# ──────────────────────────────────────────────────────────────────────────────
+
+services:
+
+  # ── CLI service ─────────────────────────────────────────────────────────
+  coderag:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    image: coderag:latest
+    volumes:
+      - coderag_data:/home/coderag/.coderag
+      - ${REPO_PATH:-./}:/workspace:ro
+    environment:
+      CODERAG_CHROMA_PATH: /home/coderag/.coderag/chroma
+      CODERAG_LOG_LEVEL: ${CODERAG_LOG_LEVEL:-INFO}
+      CODERAG_EMBEDDING_PROVIDER: ${CODERAG_EMBEDDING_PROVIDER:-sentence_transformers}
+      CODERAG_EMBEDDING_MODEL: ${CODERAG_EMBEDDING_MODEL:-all-MiniLM-L6-v2}
+      CODERAG_LLM_PROVIDER: ${CODERAG_LLM_PROVIDER:-openai}
+      CODERAG_LLM_MODEL: ${CODERAG_LLM_MODEL:-gpt-4o-mini}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+    stdin_open: true
+    tty: true
+    command: ["--help"]
+
+  # ── Phase 10: Web UI ────────────────────────────────────────────────────
+  coderag-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    image: coderag:latest
+    ports:
+      - "${WEB_PORT:-8000}:8000"
+    volumes:
+      - coderag_data:/home/coderag/.coderag
+      - ${REPO_PATH:-./}:/workspace:ro
+    environment:
+      CODERAG_CHROMA_PATH: /home/coderag/.coderag/chroma
+      CODERAG_LOG_LEVEL: ${CODERAG_LOG_LEVEL:-INFO}
+      CODERAG_EMBEDDING_PROVIDER: ${CODERAG_EMBEDDING_PROVIDER:-sentence_transformers}
+      CODERAG_EMBEDDING_MODEL: ${CODERAG_EMBEDDING_MODEL:-all-MiniLM-L6-v2}
+      CODERAG_LLM_PROVIDER: ${CODERAG_LLM_PROVIDER:-openai}
+      CODERAG_LLM_MODEL: ${CODERAG_LLM_MODEL:-gpt-4o-mini}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+    entrypoint: ["uvicorn", "coderag.web.app:app", "--host", "0.0.0.0", "--port", "8000"]
+    healthcheck:
+      test: ["CMD", "python", "-c",
+             "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/status')"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
+  # ── Evaluation harness ──────────────────────────────────────────────────
+  coderag-eval:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    image: coderag:latest
+    volumes:
+      - coderag_data:/home/coderag/.coderag
+    environment:
+      CODERAG_CHROMA_PATH: /home/coderag/.coderag/chroma
+      CODERAG_EMBEDDING_PROVIDER: ${CODERAG_EMBEDDING_PROVIDER:-sentence_transformers}
+      CODERAG_EMBEDDING_MODEL: ${CODERAG_EMBEDDING_MODEL:-all-MiniLM-L6-v2}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+    entrypoint: ["python", "tests/eval/run_eval.py"]
+    command: ["--provider", "mock"]
+
+volumes:
+  coderag_data:
+    driver: local

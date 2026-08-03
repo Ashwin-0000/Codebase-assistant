@@ -1,0 +1,7 @@
+include README.md
+include LICENSE
+include CONTRIBUTING.md
+include SECURITY.md
+include .env.example
+recursive-include src/coderag *.py *.pyi
+recursive-include tests *.py *.json

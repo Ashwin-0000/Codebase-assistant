@@ -1,0 +1,2 @@
+This is a binary-like file (pretend it's a compiled artifact).
+The walker should skip it because its extension is not in _CODE_EXTENSIONS.

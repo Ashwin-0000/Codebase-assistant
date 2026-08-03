@@ -1,0 +1,7 @@
+# This is the sample repo's own .gitignore to test that the walker
+# respects gitignore patterns inside the walked directory.
+__pycache__/
+*.pyc
+node_modules/
+dist/
+ignored_file.py
