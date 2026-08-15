@@ -14,7 +14,7 @@ from __future__ import annotations
 import logging
 from functools import lru_cache
 from pathlib import Path
-from typing import Literal
+from typing import Literal, Union
 
 from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -43,7 +43,7 @@ class Settings(BaseSettings):
     # ------------------------------------------------------------------ #
     # LLM / Generation
     # ------------------------------------------------------------------ #
-    llm_provider: Literal["openai", "anthropic", "ollama"] = "openai"
+    llm_provider: Literal["openai", "anthropic", "ollama", "local", "mock"] = "openai"
     llm_model: str = "gpt-4o-mini"
     ollama_base_url: str = Field(default="http://localhost:11434", alias="OLLAMA_BASE_URL")
 
@@ -66,7 +66,7 @@ class Settings(BaseSettings):
     # ------------------------------------------------------------------ #
     chunk_max_tokens: int = Field(default=512, gt=0)
     chunk_overlap_tokens: int = Field(default=64, ge=0)
-    languages: list[str] = ["python", "javascript", "typescript"]
+    languages: Union[list[str], str] = ["python", "javascript", "typescript"]
     skip_docgen: bool = False
 
     # ------------------------------------------------------------------ #

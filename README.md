@@ -38,27 +38,35 @@
 ### 2. Install
 
 ```bash
-# Clone the repo
-git clone https://github.com/your-org/coderag.git
-cd coderag
+# Navigate to the repository directory
+cd "path/to/rag pipeline github"
 
-# Create and activate a virtual environment
+# Create virtual environment
 python -m venv .venv
-# Windows
-.venv\Scripts\activate
-# macOS / Linux
+
+# Activate virtual environment
+# Windows (PowerShell):
+.venv\Scripts\Activate.ps1
+# Windows (Cmd):
+.venv\Scripts\activate.bat
+# macOS / Linux:
 source .venv/bin/activate
 
-# Install in editable mode with dev dependencies
-pip install -e ".[dev]"
+# Install in editable mode with dev & web dependencies
+pip install -e ".[dev,web]"
 ```
 
 ### 3. Configure
 
 ```bash
+# Windows (PowerShell / Cmd)
+copy .env.example .env
+
+# macOS / Linux
 cp .env.example .env
+
 # Edit .env and fill in the settings you need.
-# The defaults work offline with no API key (sentence-transformers embeddings).
+# Defaults work offline without an API key (using sentence-transformers embeddings).
 ```
 
 ### 4. Run tests

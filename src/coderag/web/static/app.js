@@ -280,6 +280,14 @@ function _appendAssistantMessage(data) {
        </div>`
     : '';
 
+  const offlineNotice = data.offline_mode
+    ? `<div class="offline-notice" role="status">
+         <span class="offline-icon" aria-hidden="true">⚡</span>
+         <span><strong>Offline Mode</strong> — No API key configured. Answers are generated locally without an LLM.
+         Add an <code>OPENAI_API_KEY</code> or <code>ANTHROPIC_API_KEY</code> to your <code>.env</code> for richer answers.</span>
+       </div>`
+    : '';
+
   const meta = [
     `${data.context_chunks} chunk${data.context_chunks === 1 ? '' : 's'}`,
     `${data.total_tokens} tokens`,
@@ -294,6 +302,7 @@ function _appendAssistantMessage(data) {
     <div class="msg-body">
       <div class="msg-bubble">${_fmt(data.answer)}</div>
       ${citationsHtml}
+      ${offlineNotice}
       <div class="msg-meta" aria-label="Response metadata">${_esc(meta)}</div>
     </div>`;
   el.messages.appendChild(div);

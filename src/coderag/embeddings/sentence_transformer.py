@@ -38,6 +38,7 @@ class SentenceTransformerEmbedder(EmbeddingModel):
                         ``"BAAI/bge-small-en-v1.5"``).
         """
         try:
+            logging.getLogger("huggingface_hub.utils._http").setLevel(logging.ERROR)
             from sentence_transformers import SentenceTransformer  # type: ignore
         except ImportError as exc:
             raise ImportError(
@@ -47,7 +48,10 @@ class SentenceTransformerEmbedder(EmbeddingModel):
 
         logger.info("Loading SentenceTransformer model: %s", model_name)
         self._st = SentenceTransformer(model_name)
-        self._dim: int = self._st.get_sentence_embedding_dimension()
+        if hasattr(self._st, "get_embedding_dimension"):
+            self._dim = self._st.get_embedding_dimension()
+        else:
+            self._dim = self._st.get_sentence_embedding_dimension()
         self._name = model_name
         logger.info("Model loaded (dim=%d)", self._dim)
 

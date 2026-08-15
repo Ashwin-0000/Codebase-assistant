@@ -56,6 +56,7 @@ class AskResponse(BaseModel):
     model: str
     total_tokens: int
     latency_seconds: float
+    offline_mode: bool = False
 
 
 class StatusResponse(BaseModel):

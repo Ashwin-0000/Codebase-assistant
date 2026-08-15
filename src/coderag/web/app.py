@@ -37,7 +37,7 @@ from typing import Any
 
 from fastapi import BackgroundTasks, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
 
 from coderag.web.models import (
@@ -172,6 +172,12 @@ async def serve_spa():
         "message": "CodeRAG API is running. "
         "Install the package with static files or access /api/docs for the REST API."
     }
+
+
+@app.get("/favicon.ico", include_in_schema=False)
+async def favicon():
+    """Return 204 No Content for browser favicon requests."""
+    return Response(status_code=204)
 
 
 # ---------------------------------------------------------------------------
@@ -339,6 +345,7 @@ def _sync_ask(request: AskRequest) -> AskResponse:
     # Resolve LLM provider / model
     llm_provider = request.provider or cfg.llm_provider
     llm_model = request.model or cfg.llm_model
+    offline_mode = False
 
     api_key = ""
     if llm_provider == "openai":
@@ -348,12 +355,13 @@ def _sync_ask(request: AskRequest) -> AskResponse:
 
     # Graceful fallback to mock when no API key is configured
     if not api_key and llm_provider in ("openai", "anthropic"):
-        logger.warning(
-            "No API key for %s — falling back to MockLLMClient", llm_provider
+        logger.info(
+            "No API key for %s — running in Offline / Mock mode", llm_provider
         )
-        llm_client: Any = MockLLMClient()
-        llm_provider = "mock"
-        llm_model = "mock-model"
+        llm_client: Any = MockLLMClient(model="smart-local-synthesizer")
+        llm_provider = "local"
+        llm_model = "smart-local-synthesizer"
+        offline_mode = True
     else:
         llm_client = get_llm_client(
             provider=llm_provider,
@@ -382,4 +390,5 @@ def _sync_ask(request: AskRequest) -> AskResponse:
         model=answer.model,
         total_tokens=answer.usage.total_tokens,
         latency_seconds=round(time.perf_counter() - t0, 3),
+        offline_mode=offline_mode,
     )

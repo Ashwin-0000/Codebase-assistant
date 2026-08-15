@@ -33,13 +33,6 @@ classifiers = [
     "Topic :: Software Development :: Documentation",
 ]
 
-[project.urls]
-Homepage = "https://github.com/your-org/coderag"
-Documentation = "https://github.com/your-org/coderag#readme"
-Repository = "https://github.com/your-org/coderag.git"
-Issues = "https://github.com/your-org/coderag/issues"
-Changelog = "https://github.com/your-org/coderag/releases"
-
 dependencies = [
     # CLI
     "typer[all]>=0.12",
@@ -79,6 +72,14 @@ dependencies = [
     "httpx>=0.27",
     "pathspec>=0.12",
 ]
+
+[project.urls]
+Homepage = "https://github.com/your-org/coderag"
+Documentation = "https://github.com/your-org/coderag#readme"
+Repository = "https://github.com/your-org/coderag.git"
+Issues = "https://github.com/your-org/coderag/issues"
+Changelog = "https://github.com/your-org/coderag/releases"
+
 
 [project.optional-dependencies]
 web = [
